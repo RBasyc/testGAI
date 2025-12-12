@@ -187,12 +187,23 @@ const App: React.FC = () => {
       style={{ perspective: '2500px' }}
     >
       
-      {/* Background Ambience */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,#222_0%,#050505_100%)]" />
+      {/* Background Parallax Layer */}
+      {playerState.coverArtUrl && (
+        <div 
+           className="absolute inset-[-20%] bg-cover bg-center transition-transform duration-100 ease-out -z-10 opacity-30 blur-2xl saturate-150"
+           style={{ 
+             backgroundImage: `url(${playerState.coverArtUrl})`,
+             transform: `translateX(${-rotation.y * 2}px) translateY(${-rotation.x * 2}px) scale(1.1)` 
+           }}
+        />
+      )}
+
+      {/* Background Ambience / Vignette */}
+      <div className={`absolute inset-0 pointer-events-none z-0 ${playerState.coverArtUrl ? 'bg-[radial-gradient(circle_at_center,transparent_0%,#0a0a0a_100%)]' : 'bg-[radial-gradient(circle_at_center,#222_0%,#050505_100%)]'}`} />
 
       {/* 3D Object Pivot Wrapper */}
       <div 
-        className="relative transition-transform duration-100 ease-out"
+        className="relative transition-transform duration-100 ease-out z-10"
         style={{
            width: WIDTH,
            height: HEIGHT,
@@ -253,7 +264,8 @@ const App: React.FC = () => {
                 {/* Left: Speaker Section */}
                 <div className="border-r border-slate-300 relative bg-gradient-to-br from-slate-100 to-[#cbd5e1] rounded-bl-lg" style={{ transformStyle: 'preserve-3d' }}>
                    <Speaker isPlaying={playerState.isPlaying} />
-                   <div className="absolute bottom-2 left-2 text-[6px] text-slate-500 font-mono rotate-90 origin-bottom-left tracking-widest opacity-60">STEREO OUTPUT</div>
+                   {/* FIXED: Changed rotation to -90 to read upwards inside the container, and adjusted positioning to prevent overflow */}
+                   <div className="absolute bottom-6 -left-3 text-[6px] text-slate-500 font-mono -rotate-90 origin-center tracking-widest opacity-60 w-20 text-center pointer-events-none">STEREO OUTPUT</div>
                 </div>
                 
                 {/* Right: Controls Section */}
